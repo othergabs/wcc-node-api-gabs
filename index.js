@@ -8,6 +8,11 @@ app.get("/", function(request, response) {
     response.send("Dasa Educa - Artigos");
 });
 
+const database = require("./models");
+database.sequelizeDatabase.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
+
 const router = require("./routes/artigos.routes");
 router(app);
 

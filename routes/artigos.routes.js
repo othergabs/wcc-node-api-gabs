@@ -14,10 +14,17 @@
 */
 
 module.exports = (app) => {
-    const artigosController = require("../controllers/artigos.controller");
-    let router = require("express").Router();
+  const artigosController = require("../controllers/artigos.controller");
+  let router = require("express").Router();
 
-    router.post("/", artigosController.create);
+  /*
+  implementação equivalente (e mais verbosa)
+  router.post("/", function (request, response) {
+    artigosController.create(request, response);
+  });
+  */
 
-    app.use("/artigos", router);
-}
+  router.post("/", artigosController.create);
+
+  app.use("/artigos", router);
+};

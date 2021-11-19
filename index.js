@@ -9,9 +9,10 @@ app.get("/", function(request, response) {
 });
 
 const database = require("./models");
-database.sequelizeDatabase.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+database.sequelizeDatabase.sync();
+// database.sequelizeDatabase.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 
 const router = require("./routes/artigos.routes");
 router(app);

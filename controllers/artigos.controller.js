@@ -184,7 +184,23 @@ exports.deleteAll = (request, response) => {
     });
 };
 
-exports.delete = (request, response) => {};
+exports.delete = (request, response) => {
+  const { id: idArtigo } = request.params;
+  tabelaArtigos
+    .destroy({ where: { id: idArtigo } })
+    .then(function (itemsDeletados) {
+      if (itemsDeletados === 0) {
+        response.send("O item com ID " + idArtigo + "não foi encontrado");
+      } else {
+        response.send("Artigo " + idArtigo + "deletado com sucesso");
+      }
+    })
+    .catch(function (error) {
+      response
+        .status(500)
+        .send("Ocorreu um erro ao tentar deletar o artigo " + idArtigo);
+    });
+};
 // exemplo de atribuição e renomeação
 
 const desestruturaObj = () => {

@@ -41,5 +41,7 @@ module.exports = (app) => {
 
   router.delete("/", artigosController.deleteAll);
 
+  router.delete("/:id", artigosController.delete);
+
   app.use("/articles", router);
 };

@@ -43,6 +43,19 @@ exports.findAll = (request, response) => {
     });
 };
 
+exports.findAllPublished = (request, response) => {
+  tabelaArtigos
+    .findAll({ where: { publicado: true } })
+    .then(function (data) {
+      response.send(data);
+    })
+    .catch(function (error) {
+      response
+        .status(500)
+        .send("Não foi possível buscar os artigos publicados");
+    });
+};
+
 exports.findByTitle = (request, response) => {
   const { titulo: tituloArtigo } = request.query;
 
@@ -100,6 +113,78 @@ exports.findById = (request, response) => {
     });
 };
 
+exports.update = (request, response) => {
+  const { body: updates } = request;
+  const { id: idArtigo } = request.params;
+  const query = { where: { id: idArtigo }, returning: true };
+  tabelaArtigos
+    .update(updates, query)
+    .then(function (data) {
+      // quando returning: true, o sequelize nos retorna uma lista com duas coisas:
+      // - a quantidade de itens atualizados
+      // - a lista dos itens atualizados
+
+      // [0, []]
+      // [1, [{artigo atualizado}]]
+      const linhasAtualizadas = data[0];
+      if (linhasAtualizadas === 0) {
+        response
+          .status(404)
+          .send(
+            "Não foi encontrado nenhum registro para ser atualizado a partir do id: " +
+              idArtigo
+          );
+      } else {
+        const artigosAtualizados = data[1];
+        response.send(artigosAtualizados);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+      response.status(500).send("Ocorreu um erro ao atualizar o arquivo");
+    });
+};
+
+//FIXME: ajustar implementação do update many
+exports.updateMany = (request, response) => {
+  const { body: updates } = request;
+  // const { id: idArtigo } = request.params;
+  const query = {
+    returning: true,
+    where: { descricao: "descrição do artigo" },
+  };
+
+  tabelaArtigos
+    .update(updates, query)
+    .then(function (data) {
+      console.log(data);
+      const linhasAtualizadas = data[0];
+      if (linhasAtualizadas === 0) {
+        response
+          .status(404)
+          .send("Não foi encontrado nenhum registro para ser atualizado");
+      } else {
+        const artigosAtualizados = data[1];
+        response.send(artigosAtualizados);
+      }
+    })
+    .catch(function (error) {
+      response.status(500).send("Ocorreu um erro ao atualizar os artigos");
+    });
+};
+
+exports.deleteAll = (request, response) => {
+  tabelaArtigos
+    .destroy({ where: {}, truncate: false })
+    .then(function (itemsDeletados) {
+      response.send("Foram deletados " + itemsDeletados + "artigos");
+    })
+    .catch(function (error) {
+      response.status(500).send("Ocorreu um erro ao deletar os artigos");
+    });
+};
+
+exports.delete = (request, response) => {};
 // exemplo de atribuição e renomeação
 
 const desestruturaObj = () => {
